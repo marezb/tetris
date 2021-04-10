@@ -28,6 +28,12 @@ h1 {
     height: 30px;
     border: solid 0.5px lightgray;
 }
+.full {
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    /* border: solid 0.5px lightgray; */
+}
 
 .block {
     background-color: rgb(25, 98, 235);
