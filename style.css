@@ -1,23 +1,26 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+}
+
 body {
     min-width: 400px;
     display: flex;
     flex-wrap: nowrap;
-    align-items: center;
+    align-items: top;
     margin: 40px;
     padding: 20px;
-    flex-direction: column;
+    flex-direction: row;
     border: solid 1px lightgray;
     background-color: darkgrey;
 }
 
-h1 {
-    font-family: 'Courier New', Courier, monospace;
+.left-side {
+    padding-right: 40px;
 }
 
 .grid {
     width: 300px;
     height: 600px;
-    background-color: whitesmoke;
     border: solid gray 2px;
     display: flex;
     flex-wrap: wrap;
@@ -27,6 +30,7 @@ h1 {
     width: 30px;
     height: 30px;
     border: solid 0.5px lightgray;
+    background-color: whitesmoke;
 }
 .full {
     box-sizing: border-box;
@@ -37,4 +41,46 @@ h1 {
 
 .block {
     background-color: rgb(25, 98, 235);
+}
+
+/*  #########################right side ######################### */
+
+.right-side {
+    width: 300px;
+    /* background-color: darkseagreen; */
+}
+
+.play-button {
+    border: none;
+    background-color: #008cba;
+    transition-duration: 0.1s;
+    display: inline-block;
+    width: 150px;
+    height: 40px;
+    font-size: 15px;
+    font-weight: 800;
+    border-radius: 10px;
+    box-shadow: 0 9px rgb(68, 68, 68);
+}
+.play-button:hover {
+    background-color: #085f7c;
+    color: white;
+}
+
+.play-button:focus {
+    outline: none;
+}
+
+.play-button:active {
+    background-color: #008cba;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+.grid-next-block {
+    /* margin-top: 35px; */
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-wrap: wrap;
 }
