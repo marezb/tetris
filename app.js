@@ -6,6 +6,7 @@ const grid = document.querySelector('.grid');
 console.log('grid', grid);
 const nextBlockGrid = document.querySelector('.grid-next-block');
 console.log('nextBlockGrid', nextBlockGrid);
+const info = document.querySelector('.info');
 
 //create HTML grids and fill with divs
 for (let i = 0; i < 200; i++) {
@@ -17,10 +18,10 @@ for (let i = 0; i < 200; i++) {
 
 //these divs we need to stop blocks at the bottom of the grid
 for (let i = 1; i <= 10; i++) {
-    const square = document.createElement('div');
-    square.classList.add('full');
-    square.classList.add('hidden');
-    grid.appendChild(square);
+    const squareUnderPlayArea = document.createElement('div');
+    squareUnderPlayArea.classList.add('full');
+    squareUnderPlayArea.classList.add('hidden');
+    grid.appendChild(squareUnderPlayArea);
 }
 
 //create next block grid
@@ -44,13 +45,14 @@ const playArea = Array.from(document.querySelectorAll('.hidden'));
 console.log('playArea', playArea);
 const nextBlockArea = document.querySelectorAll('.next');
 console.log('nextBlockArea', nextBlockArea);
-let gameSpeed = 11000;
+let gameSpeed = 1000;
 let nextBlockPosition = 1;
 let nextBlock;
 console.log('nextBlock', nextBlock);
 const playButton = document.querySelector('.play-button');
 console.log('playButton', playButton);
 let timer;
+let isPlaying = false;
 
 //////////////////////////////////////////////////////
 
@@ -104,15 +106,17 @@ function moveBlockDown() {
 }
 
 function controlMovement(e) {
-    switch (e.keyCode) {
-        case 37:
-            return moveLeft();
-        case 38:
-            return rotateBlock();
-        case 39:
-            return moveRight();
-        case 40:
-            return moveBlockDown();
+    if (isPlaying) {
+        switch (e.keyCode) {
+            case 37:
+                return moveLeft();
+            case 38:
+                return rotateBlock();
+            case 39:
+                return moveRight();
+            case 40:
+                return moveBlockDown();
+        }
     }
 }
 
@@ -191,15 +195,29 @@ function createNextBlock() {
     });
 }
 
-document.addEventListener('keydown', controlMovement);
-
 playButton.addEventListener('click', () => {
     if (timer) {
         clearInterval(timer);
         timer = null;
+        isPlaying = false;
+        console.log('playButton.addEventListener | isPlaying', isPlaying);
+        info.innerHTML = 'Game paused';
     } else {
+        isPlaying = true;
+        console.log('playButton.addEventListener | isPlaying', isPlaying);
         timer = setInterval(moveBlockDown, gameSpeed);
         if (!nextBlock) createNextBlock();
         createBlock();
+        info.innerHTML = 'Next block';
     }
 });
+
+function countScoreClearLine() {
+    for (let i = 199; i > 0; i -= 10) {
+        const row = [i, i - 1, i - 2, i - 3, i - 4, i - 5, i - 6, i - 7, i - 8, i - 9];
+        console.log(row);
+    }
+}
+countScoreClearLine();
+
+document.addEventListener('keydown', controlMovement);
