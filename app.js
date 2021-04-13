@@ -4,9 +4,8 @@ import { allBlocks, nextBlocks } from './blocks.js';
 
 const grid = document.querySelector('.grid');
 console.log('grid', grid);
+
 const nextBlockGrid = document.querySelector('.grid-next-block');
-console.log('nextBlockGrid', nextBlockGrid);
-const info = document.querySelector('.info');
 
 //create HTML grids and fill with divs
 for (let i = 0; i < 200; i++) {
@@ -34,25 +33,23 @@ for (let i = 1; i <= 16; i++) {
 
 //////////////////////////////////////////////////////
 
+let playArea = Array.from(document.querySelectorAll('.hidden'));
+const info = document.querySelector('.info');
+const playButton = document.querySelector('.play-button');
+const scoreHTML = document.querySelector('.score');
+const nextBlockArea = document.querySelectorAll('.next');
 const gridWidth = 10;
 const randomBlock = () => Math.floor(Math.random() * allBlocks.length);
 let choosenBlock = randomBlock();
-console.log('choosenBlock START', choosenBlock);
 let position = 4;
 let rotation = 0;
 let activeBlock = allBlocks[choosenBlock][rotation];
-const playArea = Array.from(document.querySelectorAll('.hidden'));
-console.log('playArea', playArea);
-const nextBlockArea = document.querySelectorAll('.next');
-console.log('nextBlockArea', nextBlockArea);
 let gameSpeed = 1000;
 let nextBlockPosition = 1;
 let nextBlock;
-console.log('nextBlock', nextBlock);
-const playButton = document.querySelector('.play-button');
-console.log('playButton', playButton);
 let timer;
 let isPlaying = false;
+let score = 0;
 
 //////////////////////////////////////////////////////
 
@@ -72,7 +69,6 @@ function resetBlock() {
     rotation = 0;
     choosenBlock = nextBlock;
     activeBlock = allBlocks[choosenBlock][rotation];
-    console.log('resetBlock | choosenBlock', choosenBlock);
     createBlock();
     createNextBlock();
 }
@@ -95,6 +91,7 @@ function stopBlockMovement() {
     if (checkIfBlockIsAtTheBottom(activeBlock)) {
         addClassToDiv('full');
         resetBlock();
+        countScoreClearLine();
     }
 }
 
@@ -120,23 +117,15 @@ function controlMovement(e) {
     }
 }
 
-console.log(11 % gridWidth);
-
 function moveLeft() {
     clearBlock();
-    console.log(position);
     const isAtTheLeftEdge = activeBlock.some(
         blockSmallSquareLocation =>
             (position + blockSmallSquareLocation) % gridWidth === 0
     );
 
-    activeBlock.forEach(blockSmallSquareLocation => {
-        console.log('moveLeft | position', position);
-        console.log('moveLeft | blockSmallSquareLocation', blockSmallSquareLocation);
-        console.log('modulo =', (position + blockSmallSquareLocation) % gridWidth);
-    });
+    activeBlock.forEach(blockSmallSquareLocation => {});
 
-    console.log('moveLeft | isAtTheLeftEdge', isAtTheLeftEdge);
     const isLeftSquareFull = activeBlock.some(blockLocation =>
         playArea[position - 1 + blockLocation].classList.contains('full')
     );
@@ -155,16 +144,13 @@ function moveLeft() {
 
 function moveRight() {
     clearBlock();
-    console.log(position);
     const isAtTheRightEdge = activeBlock.some(
         blockSmallSquareLocation =>
             (blockSmallSquareLocation + position) % gridWidth === 9
     );
-    console.log('moveRight | isAtTheRightEdge', isAtTheRightEdge);
     const isRightSquareFull = activeBlock.some(blockSquareLocation =>
         playArea[position + 1 + blockSquareLocation].classList.contains('full')
     );
-    console.log('moveRight | isRightSquareFull', isRightSquareFull);
 
     if (!isAtTheRightEdge && !isRightSquareFull) position++;
 
@@ -200,11 +186,9 @@ playButton.addEventListener('click', () => {
         clearInterval(timer);
         timer = null;
         isPlaying = false;
-        console.log('playButton.addEventListener | isPlaying', isPlaying);
         info.innerHTML = 'Game paused';
     } else {
         isPlaying = true;
-        console.log('playButton.addEventListener | isPlaying', isPlaying);
         timer = setInterval(moveBlockDown, gameSpeed);
         if (!nextBlock) createNextBlock();
         createBlock();
@@ -213,11 +197,24 @@ playButton.addEventListener('click', () => {
 });
 
 function countScoreClearLine() {
-    for (let i = 199; i > 0; i -= 10) {
-        const row = [i, i - 1, i - 2, i - 3, i - 4, i - 5, i - 6, i - 7, i - 8, i - 9];
-        console.log(row);
+    for (let i = 0; i < 199; i += gridWidth) {
+        const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9];
+
+        const fullRow = row.every(index => playArea[index].classList.contains('full'));
+
+        if (fullRow) {
+            score += 10;
+            scoreHTML.innerHTML = `Score ${score}`;
+            row.forEach(index => {
+                playArea[index].classList.remove('full');
+                playArea[index].classList.remove('block');
+                // playArea[index].style.backgroundColor = '';
+            });
+            const lineRemoved = playArea.splice(i, gridWidth);
+            playArea = [...lineRemoved, ...playArea];
+            playArea.forEach(square => grid.appendChild(square));
+        }
     }
 }
-countScoreClearLine();
 
 document.addEventListener('keydown', controlMovement);
