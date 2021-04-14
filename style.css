@@ -11,7 +11,7 @@ body {
     padding: 20px;
     flex-direction: row;
     border: solid 0.1px lightgray;
-    background-color: darkgrey;
+    background-color: #cecfc7;
 }
 
 .left-side {
@@ -46,13 +46,18 @@ body {
 /*  #########################right side ######################### */
 
 .right-side {
+    padding-top: 70px;
     width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     /* background-color: darkseagreen; */
 }
 
-.play-button {
+.control-button {
     border: none;
-    background-color: #008cba;
+    background-color: #3185fc;
     transition-duration: 0.1s;
     display: inline-block;
     width: 150px;
@@ -62,17 +67,17 @@ body {
     border-radius: 10px;
     box-shadow: 0 9px rgb(68, 68, 68);
 }
-.play-button:hover {
-    background-color: #085f7c;
-    color: white;
+.control-button:hover {
+    background-color: #2070df;
+    /* color: white; */
 }
 
-.play-button:focus {
+.control-button:focus {
     outline: none;
 }
 
-.play-button:active {
-    background-color: #008cba;
+.control-button:active {
+    background-color: #3185fc;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
 }
@@ -83,4 +88,8 @@ body {
     height: 120px;
     display: flex;
     flex-wrap: wrap;
+}
+.controls {
+    font-size: 1rem;
+    font-weight: bold;
 }

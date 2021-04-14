@@ -1,4 +1,5 @@
 'use strict';
+//Sounds from Zapsplat.com
 
 import { allBlocks, nextBlocks } from './blocks.js';
 
@@ -40,6 +41,10 @@ const scoreHTML = document.querySelector('.score');
 const nextBlockArea = document.querySelectorAll('.next');
 const levelHTML = document.querySelector('.level');
 const gridWidth = 10;
+const eatRowSound = new Audio('eatRow.mp3');
+const landSound = new Audio('land.mp3');
+const rotateSound = new Audio('rotate.mp3');
+
 const randomBlock = () => Math.floor(Math.random() * allBlocks.length);
 let choosenBlock = randomBlock();
 let position = 4;
@@ -58,7 +63,7 @@ const colors = ['#F17105', '#EB9FEF', '#D11149', '#E6C229', '#3185FC'];
 
 //////////////////////////////////////////////////////
 
-function addClassOrColorDiv(className = null) {
+function addClassOrColorToDiv(className = null) {
     activeBlock.forEach(blockSquareIndex => {
         let div = playArea[position + blockSquareIndex];
         div.classList.add(className);
@@ -67,11 +72,10 @@ function addClassOrColorDiv(className = null) {
 }
 
 function createBlock() {
-    addClassOrColorDiv();
+    addClassOrColorToDiv();
 }
 
 function resetBlock() {
-    // choosenBlock = randomBlock();
     position = 4;
     rotation = 0;
     choosenBlock = nextBlock;
@@ -96,8 +100,9 @@ function checkIfBlockIsAtTheBottom(activeBlock) {
 
 function stopBlockMovement() {
     if (checkIfBlockIsAtTheBottom(activeBlock)) {
-        addClassOrColorDiv('full');
+        addClassOrColorToDiv('full');
         resetBlock();
+        landSound.play();
         countScoreClearLine();
     }
 }
@@ -152,8 +157,6 @@ const isAtTheLeftEdge = () =>
 function moveLeft() {
     clearBlock();
 
-    activeBlock.forEach(blockSquareIndex => {});
-
     const isLeftSquareFull = activeBlock.some(blockLocation =>
         playArea[position - 1 + blockLocation].classList.contains('full')
     );
@@ -167,7 +170,6 @@ function moveLeft() {
         position++;
 
     checkRotatedPosition();
-
     createBlock();
     stopBlockMovement();
 }
@@ -207,6 +209,7 @@ function checkRotatedPosition(pos) {
 function rotateBlock() {
     clearBlock();
     rotation++;
+    rotateSound.play();
     if (rotation === activeBlock.length) rotation = 0;
 
     activeBlock = allBlocks[choosenBlock][rotation];
@@ -260,6 +263,8 @@ function countScoreClearLine() {
                 playArea[index].classList.remove('block');
                 playArea[index].style.backgroundColor = null;
             });
+            eatRowSound.play();
+
             const lineRemoved = playArea.splice(i, gridWidth);
             playArea = [...lineRemoved, ...playArea];
             playArea.forEach(square => grid.appendChild(square));
@@ -273,8 +278,8 @@ function finishTheGame() {
             playArea[blockSquareIndex + position].classList.contains('full')
         )
     ) {
-        info.innerHTML = 'Game Over !!!';
-        info.style.backgroundColor = '#008cba';
+        info.innerHTML = '# Game Over !!! #';
+        info.style.backgroundColor = '#D11149';
         isPlaying = false;
         clearInterval(timer);
         playButton.disabled = true;
