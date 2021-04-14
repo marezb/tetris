@@ -51,11 +51,15 @@ let timer;
 let isPlaying = false;
 let score = 0;
 
+const colors = ['#F17105', '#EB9FEF', '#D11149', '#E6C229', '#3185FC'];
+
 //////////////////////////////////////////////////////
 
 function addClassToDiv(className) {
-    activeBlock.forEach(blockSmallSquareLocation => {
-        playArea[position + blockSmallSquareLocation].classList.add(className);
+    activeBlock.forEach(blockSquareIndex => {
+        let div = playArea[position + blockSquareIndex];
+        div.classList.add(className);
+        div.style.backgroundColor = colors[choosenBlock];
     });
 }
 
@@ -74,16 +78,17 @@ function resetBlock() {
 }
 
 function clearBlock() {
-    activeBlock.forEach(blockSquareLocation => {
-        playArea[position + blockSquareLocation].classList.remove('block');
+    activeBlock.forEach(blockSquareIndex => {
+        let div = playArea[position + blockSquareIndex];
+
+        div.classList.remove('block');
+        div.style.backgroundColor = null;
     });
 }
 
 function checkIfBlockIsAtTheBottom(activeBlock) {
-    return activeBlock.some(blockSmallSquareLocation =>
-        playArea[position + blockSmallSquareLocation + gridWidth].classList.contains(
-            'full'
-        )
+    return activeBlock.some(blockSquareIndex =>
+        playArea[position + blockSquareIndex + gridWidth].classList.contains('full')
     );
 }
 
@@ -100,6 +105,7 @@ function moveBlockDown() {
     position += gridWidth;
     createBlock();
     stopBlockMovement();
+    finishTheGame();
 }
 
 function controlMovement(e) {
@@ -117,26 +123,32 @@ function controlMovement(e) {
     }
 }
 
-function moveLeft() {
-    clearBlock();
-    const isAtTheLeftEdge = activeBlock.some(
-        blockSmallSquareLocation =>
-            (position + blockSmallSquareLocation) % gridWidth === 0
+const isAtTheRightEdge = () =>
+    activeBlock.some(
+        blockSquareIndex => (position + blockSquareIndex + 1) % gridWidth === 0
     );
 
-    activeBlock.forEach(blockSmallSquareLocation => {});
+const isAtTheLeftEdge = () =>
+    activeBlock.some(blockSquareIndex => (position + blockSquareIndex) % gridWidth === 0);
+
+function moveLeft() {
+    clearBlock();
+
+    activeBlock.forEach(blockSquareIndex => {});
 
     const isLeftSquareFull = activeBlock.some(blockLocation =>
         playArea[position - 1 + blockLocation].classList.contains('full')
     );
 
-    if (!isAtTheLeftEdge && !isLeftSquareFull) position--;
+    if (!isAtTheLeftEdge() && !isLeftSquareFull) position--;
     if (
-        activeBlock.some(blockSmallSquareLocation =>
-            playArea[position + blockSmallSquareLocation].classList.contains('full')
+        activeBlock.some(blockSquareIndex =>
+            playArea[position + blockSquareIndex].classList.contains('full')
         )
     )
         position++;
+
+    checkRotatedPosition();
 
     createBlock();
     stopBlockMovement();
@@ -144,18 +156,34 @@ function moveLeft() {
 
 function moveRight() {
     clearBlock();
-    const isAtTheRightEdge = activeBlock.some(
-        blockSmallSquareLocation =>
-            (blockSmallSquareLocation + position) % gridWidth === 9
-    );
-    const isRightSquareFull = activeBlock.some(blockSquareLocation =>
-        playArea[position + 1 + blockSquareLocation].classList.contains('full')
+
+    const isRightSquareFull = activeBlock.some(blockSquareIndex =>
+        playArea[position + 1 + blockSquareIndex].classList.contains('full')
     );
 
-    if (!isAtTheRightEdge && !isRightSquareFull) position++;
+    if (!isAtTheRightEdge() && !isRightSquareFull) position++;
 
     createBlock();
     stopBlockMovement();
+}
+
+// fixing block rotation at the edge
+
+function checkRotatedPosition(P) {
+    P = P || position; //get current position.  Then, check if the piece is near the left side.
+    if ((P + 1) % gridWidth < 4) {
+        //add 1 because the position index can be 1 less than where the piece is (with how they are indexed).
+        if (isAtTheRightEdge()) {
+            //use actual position to check if it's flipped over to right side
+            position += 1; //if so, add one to wrap it back around
+            checkRotatedPosition(P); //check again.  Pass position from start, since long block might need to move more.
+        }
+    } else if (P % gridWidth > 5) {
+        if (isAtTheLeftEdge()) {
+            position -= 1;
+            checkRotatedPosition(P);
+        }
+    }
 }
 
 function rotateBlock() {
@@ -165,19 +193,22 @@ function rotateBlock() {
 
     activeBlock = allBlocks[choosenBlock][rotation];
 
+    checkRotatedPosition();
+
     createBlock();
 }
 
 function createNextBlock() {
     //first clear next block grid
-    nextBlockArea.forEach(square => square.classList.remove('block'));
+    // nextBlockArea.forEach(square => square.classList.remove('block'));
+    nextBlockArea.forEach(square => (square.style.backgroundColor = 'black'));
     nextBlock = randomBlock();
     const showNextBlock = nextBlocks[nextBlock];
 
-    showNextBlock.forEach(nextBlockSmallSquareLocation => {
-        nextBlockArea[nextBlockSmallSquareLocation + nextBlockPosition].classList.add(
-            'block'
-        );
+    showNextBlock.forEach(nextBlockSquareLocation => {
+        const div = nextBlockArea[nextBlockSquareLocation + nextBlockPosition];
+        // div.classList.add('block');
+        div.style.backgroundColor = colors[nextBlock];
     });
 }
 
@@ -208,12 +239,25 @@ function countScoreClearLine() {
             row.forEach(index => {
                 playArea[index].classList.remove('full');
                 playArea[index].classList.remove('block');
-                // playArea[index].style.backgroundColor = '';
+                playArea[index].style.backgroundColor = null;
             });
             const lineRemoved = playArea.splice(i, gridWidth);
             playArea = [...lineRemoved, ...playArea];
             playArea.forEach(square => grid.appendChild(square));
         }
+    }
+}
+
+function finishTheGame() {
+    if (
+        activeBlock.some(blockSquareIndex =>
+            playArea[blockSquareIndex + position].classList.contains('full')
+        )
+    ) {
+        info.innerHTML = 'Game Over !!!';
+        info.style.backgroundColor = '#008cba';
+        isPlaying = false;
+        clearInterval(timer);
     }
 }
 
