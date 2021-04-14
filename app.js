@@ -38,6 +38,7 @@ const info = document.querySelector('.info');
 const playButton = document.querySelector('.play-button');
 const scoreHTML = document.querySelector('.score');
 const nextBlockArea = document.querySelectorAll('.next');
+const levelHTML = document.querySelector('.level');
 const gridWidth = 10;
 const randomBlock = () => Math.floor(Math.random() * allBlocks.length);
 let choosenBlock = randomBlock();
@@ -50,12 +51,14 @@ let nextBlock;
 let timer;
 let isPlaying = false;
 let score = 0;
+let level = 1;
+let scoreCounter = 10;
 
 const colors = ['#F17105', '#EB9FEF', '#D11149', '#E6C229', '#3185FC'];
 
 //////////////////////////////////////////////////////
 
-function addClassToDiv(className) {
+function addClassOrColorDiv(className = null) {
     activeBlock.forEach(blockSquareIndex => {
         let div = playArea[position + blockSquareIndex];
         div.classList.add(className);
@@ -64,7 +67,7 @@ function addClassToDiv(className) {
 }
 
 function createBlock() {
-    addClassToDiv('block');
+    addClassOrColorDiv();
 }
 
 function resetBlock() {
@@ -80,9 +83,8 @@ function resetBlock() {
 function clearBlock() {
     activeBlock.forEach(blockSquareIndex => {
         let div = playArea[position + blockSquareIndex];
-
-        div.classList.remove('block');
         div.style.backgroundColor = null;
+        // div.classList.remove('block');
     });
 }
 
@@ -94,7 +96,7 @@ function checkIfBlockIsAtTheBottom(activeBlock) {
 
 function stopBlockMovement() {
     if (checkIfBlockIsAtTheBottom(activeBlock)) {
-        addClassToDiv('full');
+        addClassOrColorDiv('full');
         resetBlock();
         countScoreClearLine();
     }
@@ -120,6 +122,22 @@ function controlMovement(e) {
             case 40:
                 return moveBlockDown();
         }
+    }
+}
+
+function changeLevel() {
+    if (score % 100 === 0 && gameSpeed >= 200) {
+        gameSpeed -= 100;
+        level++;
+        scoreCounter += 10;
+        console.log('changeLevel | scoreCounter', scoreCounter);
+        clearInterval(timer);
+
+        timer = setInterval(moveBlockDown, gameSpeed);
+        console.log('changeLevel | timer', timer);
+
+        levelHTML.innerHTML = `Level ${level}`;
+        console.log(gameSpeed);
     }
 }
 
@@ -169,19 +187,19 @@ function moveRight() {
 
 // fixing block rotation at the edge
 
-function checkRotatedPosition(P) {
-    P = P || position; //get current position.  Then, check if the piece is near the left side.
-    if ((P + 1) % gridWidth < 4) {
+function checkRotatedPosition(pos) {
+    pos = pos || position; //get current position.  Then, check if the piece is near the left side.
+    if ((pos + 1) % gridWidth < 4) {
         //add 1 because the position index can be 1 less than where the piece is (with how they are indexed).
         if (isAtTheRightEdge()) {
             //use actual position to check if it's flipped over to right side
             position += 1; //if so, add one to wrap it back around
-            checkRotatedPosition(P); //check again.  Pass position from start, since long block might need to move more.
+            checkRotatedPosition(pos); //check again.  Pass position from start, since long block might need to move more.
         }
-    } else if (P % gridWidth > 5) {
+    } else if (pos % gridWidth > 5) {
         if (isAtTheLeftEdge()) {
             position -= 1;
-            checkRotatedPosition(P);
+            checkRotatedPosition(pos);
         }
     }
 }
@@ -234,7 +252,8 @@ function countScoreClearLine() {
         const fullRow = row.every(index => playArea[index].classList.contains('full'));
 
         if (fullRow) {
-            score += 10;
+            score += scoreCounter;
+            changeLevel();
             scoreHTML.innerHTML = `Score ${score}`;
             row.forEach(index => {
                 playArea[index].classList.remove('full');
@@ -258,6 +277,7 @@ function finishTheGame() {
         info.style.backgroundColor = '#008cba';
         isPlaying = false;
         clearInterval(timer);
+        playButton.disabled = true;
     }
 }
 
