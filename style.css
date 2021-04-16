@@ -1,5 +1,16 @@
+:root {
+    --dark: #264653;
+    --shadow: #2a9d8f;
+    --shadowActive: #15514a;
+    --background: #e9c46a;
+    --sandybrown: #f4a261;
+    --burntsienna: #e76f51;
+    --hover: #13242a;
+}
+
 * {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--dark);
 }
 
 body {
@@ -10,12 +21,15 @@ body {
     margin: 40px;
     padding: 20px;
     flex-direction: row;
-    border: solid 0.1px lightgray;
-    background-color: #cecfc7;
+    background-color: var(--background);
 }
 
 .left-side {
     padding-right: 40px;
+}
+
+.score {
+    font-size: 2em;
 }
 
 .grid {
@@ -57,7 +71,9 @@ body {
 
 .control-button {
     border: none;
-    background-color: #3185fc;
+    background-color: var(--dark);
+    box-shadow: 0 9px var(--shadow);
+    color: #e9c46a;
     transition-duration: 0.1s;
     display: inline-block;
     width: 150px;
@@ -65,10 +81,11 @@ body {
     font-size: 15px;
     font-weight: 800;
     border-radius: 10px;
-    box-shadow: 0 9px rgb(68, 68, 68);
+    margin-top: 35px;
 }
 .control-button:hover {
-    background-color: #2070df;
+    background-color: var(--hover);
+    color: var(--background);
     /* color: white; */
 }
 
@@ -77,13 +94,13 @@ body {
 }
 
 .control-button:active {
-    background-color: #3185fc;
-    box-shadow: 0 5px #666;
+    background-color: var(--hover);
+    box-shadow: 0 5px var(--shadowActive);
     transform: translateY(4px);
 }
 
 .grid-next-block {
-    /* margin-top: 35px; */
+    margin-top: 20px;
     width: 120px;
     height: 120px;
     display: flex;
@@ -92,4 +109,22 @@ body {
 .controls {
     font-size: 1rem;
     font-weight: bold;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+
+    height: 50px;
+    width: 250px;
+}
+
+/* #################################### */
+
+.scoreboard {
+    font-size: large;
+    font-weight: 700;
+    font-stretch: expanded;
 }
