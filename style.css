@@ -125,6 +125,7 @@ body {
 
 .scoreboard {
     font-size: large;
-    font-weight: 700;
+    font-weight: 500;
     font-stretch: expanded;
+    padding: 10px;
 }
