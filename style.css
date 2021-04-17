@@ -1,15 +1,16 @@
 :root {
-    --dark: #264653;
-    --shadow: #2a9d8f;
-    --shadowActive: #15514a;
-    --background: #e9c46a;
-    --sandybrown: #f4a261;
+    --dark: #22212a;
+    --shadow: #8991a1;
+    --shadowActive: #6c6c77;
+    --background: #f9f6f7;
+    --buttonText: #e8ebec;
     --burntsienna: #e76f51;
-    --hover: #13242a;
+    --hover: #98a59a;
 }
 
 * {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu,
+        Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     color: var(--dark);
 }
 
@@ -53,9 +54,9 @@ body {
     /* border: solid 0.5px lightgray; */
 }
 
-.block {
+/* .block {
     background-color: rgb(25, 98, 235);
-}
+} */
 
 /*  #########################right side ######################### */
 
@@ -72,21 +73,20 @@ body {
 .control-button {
     border: none;
     background-color: var(--dark);
-    box-shadow: 0 9px var(--shadow);
-    color: #e9c46a;
+    box-shadow: 0 5px var(--shadow);
+    color: var(--buttonText);
     transition-duration: 0.1s;
     display: inline-block;
     width: 150px;
     height: 40px;
     font-size: 15px;
-    font-weight: 800;
-    border-radius: 10px;
+    font-weight: 600;
+    border-radius: 20px;
     margin-top: 35px;
 }
 .control-button:hover {
     background-color: var(--hover);
     color: var(--background);
-    /* color: white; */
 }
 
 .control-button:focus {
@@ -95,7 +95,7 @@ body {
 
 .control-button:active {
     background-color: var(--hover);
-    box-shadow: 0 5px var(--shadowActive);
+    box-shadow: 0 2px var(--shadowActive);
     transform: translateY(4px);
 }
 
@@ -116,9 +116,9 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-
-    height: 50px;
+    height: 40px;
     width: 250px;
+    margin: 10px;
 }
 
 /* #################################### */
@@ -126,6 +126,9 @@ body {
 .scoreboard {
     font-size: large;
     font-weight: 500;
-    font-stretch: expanded;
+    /* font-stretch: expanded; */
     padding: 10px;
+    width: 25%;
+    max-width: 300px;
+    max-height: 400px;
 }

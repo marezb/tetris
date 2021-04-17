@@ -1,3 +1,4 @@
+'use strict';
 const scores = {
     topTen: JSON.parse(window.localStorage.getItem('topTen')) || [
         { Tymon: 10 },

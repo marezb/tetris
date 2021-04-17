@@ -4,7 +4,6 @@ import { allBlocks, nextBlocks } from './blocks.js';
 import scores from './topTen.js';
 
 const grid = document.querySelector('.grid');
-console.log('grid', grid);
 
 const nextBlockGrid = document.querySelector('.grid-next-block');
 
@@ -39,7 +38,7 @@ const info = document.querySelector('.info');
 const playButton = document.querySelector('.play-button');
 const scoreHTML = document.querySelector('.score');
 const nextBlockArea = document.querySelectorAll('.next');
-const levelHTML = document.querySelector('.level');
+const levelHTML = document.querySelector('.info-level');
 const gridWidth = 10;
 const eatRowSound = new Audio('eatRow.mp3');
 const landSound = new Audio('land.wav');
@@ -101,12 +100,9 @@ function checkIfBlockIsAtTheBottom(activeBlock) {
 
 function stopBlockMovement() {
     if (checkIfBlockIsAtTheBottom(activeBlock)) {
-        setTimeout(function () {
-            console.log('timer started');
-            landSound.play();
-        }, gameSpeed);
-        resetBlock();
         addClassOrColorToDiv('full');
+        resetBlock();
+        landSound.play();
         countScoreClearLine();
     }
 }
@@ -139,14 +135,9 @@ function changeLevel() {
         gameSpeed -= 100;
         level++;
         scoreCounter += 10;
-        console.log('changeLevel | scoreCounter', scoreCounter);
         clearInterval(timer);
-
         timer = setInterval(moveBlockDown, gameSpeed);
-        console.log('changeLevel | timer', timer);
-
         levelHTML.innerHTML = `Level ${level}`;
-        console.log(gameSpeed);
     }
 }
 
@@ -160,7 +151,6 @@ const isAtTheLeftEdge = () =>
 
 function moveLeft() {
     clearBlock();
-
     const isLeftSquareFull = activeBlock.some(blockLocation =>
         playArea[position - 1 + blockLocation].classList.contains('full')
     );
@@ -248,7 +238,7 @@ playButton.addEventListener('click', () => {
         timer = setInterval(moveBlockDown, gameSpeed);
         if (!nextBlock) createNextBlock();
         createBlock();
-        info.innerHTML = 'Next block';
+        // info.innerHTML = 'Next block';
     }
 });
 
@@ -282,14 +272,17 @@ function finishTheGame() {
             playArea[blockSquareIndex + position].classList.contains('full')
         )
     ) {
-        info.innerHTML = ` 🤔 Game Over !! 🤔`;
-        info.style.backgroundColor = '#264653';
-        info.style.color = '#e76f51';
+        info.innerHTML = `🤔 Game Over !! 🤔`;
+        info.style.backgroundColor = '#22212a';
+        info.style.color = '#98a59a';
         isPlaying = false;
         clearInterval(timer);
         playButton.disabled = true;
-        gameOverSound.play();
         scores.checkScore(score);
+        gameOverSound.play();
+        setInterval(() => {
+            window.location.reload();
+        }, 3000);
     }
 }
 
