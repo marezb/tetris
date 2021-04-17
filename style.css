@@ -36,9 +36,9 @@ body {
 .grid {
     width: 300px;
     height: 600px;
-    border: solid gray 1px;
     display: flex;
     flex-wrap: wrap;
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .square {
     box-sizing: border-box;
@@ -105,6 +105,7 @@ body {
     height: 120px;
     display: flex;
     flex-wrap: wrap;
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .controls {
     font-size: 1rem;
