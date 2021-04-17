@@ -238,7 +238,7 @@ playButton.addEventListener('click', () => {
         timer = setInterval(moveBlockDown, gameSpeed);
         if (!nextBlock) createNextBlock();
         createBlock();
-        // info.innerHTML = 'Next block';
+        info.innerHTML = 'Next block';
     }
 });
 
